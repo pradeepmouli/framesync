@@ -1,0 +1,22 @@
+# Node
+node_modules/
+*.log
+
+# Builds
+/packages/*/dist/
+/packages/*/.expo/
+/packages/*/.expo-shared/
+/packages/*/.turbo/
+
+# Env
+.env
+packages/*/.env
+packages/*/.env.*
+
+# iOS/Android artifacts
+packages/mobile/ios/
+packages/mobile/android/
+
+# Misc
+.DS_Store
+.vscode/*.log

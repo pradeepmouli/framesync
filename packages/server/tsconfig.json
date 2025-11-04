@@ -1,0 +1,16 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "outDir": "dist",
+    "declaration": true,
+    "types": ["node"],
+    "lib": ["ES2022"],
+    "noEmitOnError": true,
+    "baseUrl": ".",
+    "paths": {
+      "@framesync/shared": ["../../shared/src"],
+      "@framesync/shared/*": ["../../shared/src/*"]
+    }
+  },
+  "include": ["src"]
+}

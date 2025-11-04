@@ -1,0 +1,25 @@
+{
+  "name": "framesync",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Monorepo: iOS app (Expo) + Node server to sync photos to Samsung Frame TV",
+  "workspaces": [
+    "packages/*",
+    "shared"
+  ],
+  "scripts": {
+    "build": "npm -ws run build",
+    "test": "npm -ws run test",
+    "typecheck": "npm -ws run typecheck",
+    "lint": "oxlint .",
+    "format": "oxfmt .",
+    "prepare": "echo 'Framesync monorepo'"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "devDependencies": {
+    "oxfmt": "^0.2.0",
+    "oxlint": "^0.9.5"
+  }
+}
