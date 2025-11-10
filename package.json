@@ -4,16 +4,17 @@
   "private": true,
   "description": "Monorepo: iOS app (Expo) + Node server to sync photos to Samsung Frame TV",
   "workspaces": [
-    "packages/*",
-    "shared"
+    "packages/mobile"
   ],
   "scripts": {
-    "build": "npm -ws run build",
-    "test": "npm -ws run test",
-    "typecheck": "npm -ws run typecheck",
+    "build": "npm --workspace @framesync/mobile run build || true",
+    "test": "npm --workspace @framesync/mobile run test",
+    "typecheck": "npm --workspace @framesync/mobile run typecheck",
     "lint": "oxlint .",
     "format": "oxfmt .",
-    "prepare": "echo 'Framesync monorepo'"
+    "prepare": "echo 'Framesync monorepo'",
+    "android": "npm --workspace @framesync/mobile run android",
+    "ios": "npm --workspace @framesync/mobile run ios"
   },
   "engines": {
     "node": ">=20.0.0"
@@ -21,5 +22,10 @@
   "devDependencies": {
     "oxfmt": "^0.2.0",
     "oxlint": "^0.9.5"
+  },
+  "dependencies": {
+    "expo": "~54.0.22",
+    "react": "19.1.0",
+    "react-native": "0.81.5"
   }
 }

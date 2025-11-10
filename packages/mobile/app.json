@@ -1,0 +1,16 @@
+{
+  "expo": {
+    "name": "FrameSync",
+    "slug": "framesync",
+    "scheme": "framesync",
+    "ios": {
+      "infoPlist": {
+        "NSPhotoLibraryUsageDescription": "FrameSync needs access to your Photos to send images to your TV.",
+        "NSLocalNetworkUsageDescription": "FrameSync connects to your Samsung Frame TV on the local network."
+      }
+    },
+    "plugins": [
+      "expo-router"
+    ]
+  }
+}

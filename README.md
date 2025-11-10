@@ -1,20 +1,16 @@
-# FrameSync
+# FrameSync (Option C: Expo-only)
 
-Native iOS (Expo) app + Node server to manage photos/art on Samsung Frame TV. The server uses `samsung-frame-connect` to pair and control Art Mode; the app browses your photo library and sends selections to the TV.
+Native iOS app built with Expo that manages photos/art on Samsung Frame TV. The app uses `expo-media-library` to access your photo library (including iCloud assets when available) and will directly communicate with the Frame TV over WebSockets from React Native.
 
-## Packages
-- `packages/server`: Express + TypeScript REST/SSE API wrapping samsung-frame-connect
+## Package
 - `packages/mobile`: Expo + React Native app for iOS
-- `shared`: Shared zod schemas and TypeScript types
 
 ## Quick start
 1. Install deps
-2. Configure server `.env` (see `packages/server/.env.example`)
-3. Start server, then run the mobile app.
+2. Start the Expo app
 
-See detailed instructions in each package `README`.
+Implementation is currently paused pending Specify steps. See `.specify/memory` for the constitution, baseline spec, plan, and tasks.
 
 ## Notes
-- Initial implementation targets a single Samsung Frame TV on your LAN.
-- Pairing and upload behavior depends on TV model/firmware; keep your TV up to date.
-- Server should run on the same network as the TV. Secure your LAN.
+- Direct TV control will be implemented via WebSockets in the app (no Node server).
+- Some Samsung models/firmwares behave differently; we’ll iterate based on the P1 flows in the spec.
