@@ -107,3 +107,10 @@ Before starting a new task in the above plan, update progress in the plan.
 - Work through each checklist item systematically.
 - Keep communication concise and focused.
 - Follow development best practices.
+
+## Active Technologies
+- TypeScript (Node 20+), Swift 5.9+ (iOS integration) + swift-samsung-frame (Frame control), Expo/React Native mobile app, Express server, zod, axios (001-icloud-frame-sync)
+- N/A for MVP (no persistent server DB). Local state/preferences in app; transient server cache if needed. (001-icloud-frame-sync)
+
+## Recent Changes
+- 001-icloud-frame-sync: Added TypeScript (Node 20+), Swift 5.9+ (iOS integration) + swift-samsung-frame (Frame control), Expo/React Native mobile app, Express server, zod, axios

@@ -1,0 +1,144 @@
+openapi: 3.1.0
+info:
+  title: FrameSync API
+  version: 0.1.0
+  description: API contracts for iCloud → Frame Sync feature (upload, list, delete, sync)
+servers:
+  - url: https://api.framesync.local
+paths:
+  /frame/media:
+    get:
+      summary: List media currently on the Frame
+      operationId: listFrameMedia
+      responses:
+        '200':
+          description: Media list
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  items:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/FrameMedia'
+  /frame/media/upload:
+    post:
+      summary: Upload single photo to Frame
+      operationId: uploadPhoto
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [assetId]
+              properties:
+                assetId:
+                  type: string
+                convertIfNeeded:
+                  type: boolean
+                  default: true
+      responses:
+        '202':
+          description: Accepted for upload
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UploadAccepted'
+  /frame/media/{mediaId}:
+    delete:
+      summary: Delete media from Frame
+      operationId: deleteFrameMedia
+      parameters:
+        - name: mediaId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Deletion result
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeleteResult'
+  /sync/jobs:
+    post:
+      summary: Trigger manual album sync
+      operationId: triggerSync
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [albumId]
+              properties:
+                albumId: { type: string }
+                deletionMode:
+                  type: string
+                  enum: [add-only, mirror]
+                  default: add-only
+      responses:
+        '202':
+          description: Sync job accepted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SyncAccepted'
+  /sync/jobs/{jobId}:
+    get:
+      summary: Get sync job status
+      operationId: getSyncJob
+      parameters:
+        - name: jobId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Sync job status
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SyncJob'
+components:
+  schemas:
+    FrameMedia:
+      type: object
+      properties:
+        id: { type: string }
+        title: { type: string }
+        createdAt: { type: string, format: date-time }
+        width: { type: integer }
+        height: { type: integer }
+        sizeBytes: { type: integer }
+        fingerprint: { type: string }
+    UploadAccepted:
+      type: object
+      properties:
+        uploadId: { type: string }
+        status: { type: string, enum: [pending, started] }
+    DeleteResult:
+      type: object
+      properties:
+        mediaId: { type: string }
+        deleted: { type: boolean }
+    SyncAccepted:
+      type: object
+      properties:
+        jobId: { type: string }
+        status: { type: string, enum: [pending] }
+    SyncJob:
+      type: object
+      properties:
+        id: { type: string }
+        albumId: { type: string }
+        startedAt: { type: string, format: date-time }
+        completedAt: { type: string, format: date-time }
+        addedCount: { type: integer }
+        skippedDuplicates: { type: integer }
+        failedCount: { type: integer }
+        deletionMode: { type: string, enum: [add-only, mirror] }
