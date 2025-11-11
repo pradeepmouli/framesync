@@ -3,6 +3,7 @@ import { router } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { Alert, Platform, StyleSheet } from 'react-native';
 import { frameClient } from '../src/frameClient';
+import { activityLog } from '../src/activityLog';
 
 const SwiftUIComponents = Platform.OS === 'ios'
 	? require('@expo/ui/swift-ui')
@@ -117,11 +118,18 @@ export default function SyncScreen() {
 			}
 
 			setProgress('Sync complete');
+			
+			await activityLog.add('sync', failedCount > 0 ? 'error' : 'success',
+				`Album sync: ${addedCount} added, ${skippedCount} skipped`,
+				{ count: addedCount, albumName: selectedAlbum.title });
+			
 			Alert.alert(
 				'Sync Complete',
 				`Added: ${addedCount}\nSkipped (duplicates): ${skippedCount}\nFailed: ${failedCount}`
 			);
 		} catch (e: any) {
+			await activityLog.add('sync', 'error', `Sync failed: ${e?.message || 'unknown'}`,
+				{ albumName: selectedAlbum?.title });
 			Alert.alert('Sync Error', e?.message || 'Unknown error');
 		} finally {
 			setSyncing(false);

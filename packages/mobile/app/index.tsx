@@ -132,6 +132,18 @@ export default function ConnectScreen() {
 							<Text fontWeight="semibold">Sync Album to Frame</Text>
 						</Button>
 					) : null}
+					{status === 'connected' ? (
+						<Button
+							onPress={() => router.push('/activity')}
+							modifiers={[
+								glassEffect({ glass: { variant: 'clear' } }),
+								padding({ horizontal: 32, vertical: 12 }),
+								cornerRadius(12)
+							]}
+						>
+							<Text fontWeight="semibold">View Activity</Text>
+						</Button>
+					) : null}
 					<Spacer />
 				</VStack>
 			</Host>
@@ -172,6 +184,12 @@ export default function ConnectScreen() {
 					<>
 						<View style={{ height: 8 }} />
 						<Button title="Sync Album to Frame" onPress={() => router.push('/sync')} />
+					</>
+				) : null}
+				{status === 'connected' ? (
+					<>
+						<View style={{ height: 8 }} />
+						<Button title="View Activity" onPress={() => router.push('/activity')} />
 					</>
 				) : null}
 			</View>

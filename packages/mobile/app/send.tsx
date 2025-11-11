@@ -2,6 +2,7 @@ import { useLocalSearchParams } from 'expo-router';
 import { useState } from 'react';
 import { Alert, Platform, StyleSheet } from 'react-native';
 import { frameClient } from '../src/frameClient';
+import { activityLog } from '../src/activityLog';
 
 const SwiftUIComponents = Platform.OS === 'ios'
 	? require('@expo/ui/swift-ui')
@@ -25,9 +26,11 @@ export default function SendScreen() {
 			await frameClient.sendPhoto(id, (p) => setProgress(p));
 			setResult('Sent successfully!');
 			setProgress(100);
+			await activityLog.add('upload', 'success', 'Photo uploaded to Frame', { assetId: id });
 		} catch (e: any) {
 			setResult(`Error: ${e?.message || 'failed'}`);
 			setProgress(0);
+			await activityLog.add('upload', 'error', `Upload failed: ${e?.message || 'unknown'}`, { assetId: id });
 		} finally {
 			setBusy(false);
 		}

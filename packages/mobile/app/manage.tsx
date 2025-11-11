@@ -2,6 +2,7 @@ import { router } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { Alert, Platform, StyleSheet } from 'react-native';
 import { frameClient } from '../src/frameClient';
+import { activityLog } from '../src/activityLog';
 
 const SwiftUIComponents = Platform.OS === 'ios'
 	? require('@expo/ui/swift-ui')
@@ -75,6 +76,9 @@ export default function ManageScreen() {
 
 						setDeleting(false);
 						setSelectedIds(new Set());
+						
+						await activityLog.add('delete', successCount > 0 ? 'success' : 'error', 
+							`Deleted ${successCount} item(s) from Frame`, { count: successCount });
 						
 						if (failCount > 0) {
 							Alert.alert('Completed with errors', `Deleted ${successCount}, failed ${failCount}`);
