@@ -1,8 +1,8 @@
 # Tasks: iCloud → Frame Sync
 
-Feature Dir: /Users/pmouli/GitHub.nosync/framesync/specs/001-icloud-frame-sync  
-Spec: ./spec.md  
-Plan: ./plan.md  
+Feature Dir: /Users/pmouli/GitHub.nosync/framesync/specs/001-icloud-frame-sync
+Spec: ./spec.md
+Plan: ./plan.md
 Contracts: ./contracts/openapi.yaml
 
 ## Phase 1 — Setup
