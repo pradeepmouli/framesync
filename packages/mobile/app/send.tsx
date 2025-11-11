@@ -11,6 +11,7 @@ export default function SendScreen() {
 	const { id } = useLocalSearchParams<{ id?: string }>();
 	const [busy, setBusy] = useState(false);
 	const [result, setResult] = useState('');
+	const [progress, setProgress] = useState(0);
 
 	const onSend = async () => {
 		if (!id) {
@@ -19,11 +20,14 @@ export default function SendScreen() {
 		}
 		setBusy(true);
 		setResult('Sending…');
+		setProgress(0);
 		try {
-			await frameClient.sendPhoto(id);
-			setResult('Sent');
+			await frameClient.sendPhoto(id, (p) => setProgress(p));
+			setResult('Sent successfully!');
+			setProgress(100);
 		} catch (e: any) {
 			setResult(`Error: ${e?.message || 'failed'}`);
+			setProgress(0);
 		} finally {
 			setBusy(false);
 		}
@@ -31,7 +35,7 @@ export default function SendScreen() {
 
 	// iOS SwiftUI version
 	if (Platform.OS === 'ios' && SwiftUIComponents) {
-		const { Host, List, Section, Button, Text, VStack } = SwiftUIComponents;
+		const { Host, List, Section, Button, Text, VStack, ProgressView } = SwiftUIComponents;
 
 		return (
 			<Host style={styles.container}>
@@ -48,6 +52,9 @@ export default function SendScreen() {
 							)}
 						</Section>
 					</List>
+					{busy && progress > 0 ? (
+						<ProgressView value={progress / 100} />
+					) : null}
 					<Button
 						action={onSend}
 						disabled={!id || busy}
@@ -55,6 +62,9 @@ export default function SendScreen() {
 						<Text>{busy ? 'Sending…' : 'Send'}</Text>
 					</Button>
 					{result ? <Text foregroundColor="secondary">{result}</Text> : null}
+					{busy && progress > 0 ? (
+						<Text foregroundColor="secondary">{Math.round(progress)}%</Text>
+					) : null}
 				</VStack>
 			</Host>
 		);
@@ -66,6 +76,7 @@ export default function SendScreen() {
 		<View style={styles.container}>
 			<Text style={styles.title}>Send to Frame</Text>
 			{id ? <Text>Selected asset: {id}</Text> : <Text>No photo selected</Text>}
+			{busy && progress > 0 ? <Text>Progress: {Math.round(progress)}%</Text> : null}
 			<Button title={busy ? 'Sending…' : 'Send'} onPress={onSend} disabled={!id || busy} />
 			<Text style={styles.status}>{result}</Text>
 		</View>

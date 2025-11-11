@@ -108,6 +108,18 @@ export default function ConnectScreen() {
 					>
 						<Text fontWeight="semibold">Continue</Text>
 					</Button>
+					{status === 'connected' ? (
+						<Button
+							onPress={() => router.push('/manage')}
+							modifiers={[
+								glassEffect({ glass: { variant: 'clear' } }),
+								padding({ horizontal: 32, vertical: 12 }),
+								cornerRadius(12)
+							]}
+						>
+							<Text fontWeight="semibold">Manage Frame Media</Text>
+						</Button>
+					) : null}
 					<Spacer />
 				</VStack>
 			</Host>
@@ -138,6 +150,12 @@ export default function ConnectScreen() {
 				<Text style={styles.status}>Status: {status}</Text>
 				<View style={{ height: 8 }} />
 				<Button title="Continue" onPress={() => router.push('/albums')} />
+				{status === 'connected' ? (
+					<>
+						<View style={{ height: 8 }} />
+						<Button title="Manage Frame Media" onPress={() => router.push('/manage')} />
+					</>
+				) : null}
 			</View>
 		</View>
 	);
