@@ -477,54 +477,7 @@ private actor FrameNativeBridge {
 					// Upload the asset
 					Task {
 						do {
-							let imageManager = PHImageManager.default()
-							let requestOptions = PHImageRequestOptions()
-							requestOptions.isSynchronous = false
-							requestOptions.deliveryMode = .highQualityFormat
-							requestOptions.isNetworkAccessAllowed = true
-							
-							let imageData = try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Data, Error>) in
-								imageManager.requestImageDataAndOrientation(for: asset, options: requestOptions) { data, dataUTI, orientation, info in
-									if let error = info?[PHImageErrorKey] as? Error {
-										continuation.resume(throwing: error)
-										return
-									}
-									
-									guard let data = data else {
-										continuation.resume(throwing: FrameModuleError.invalidArguments(reason: "Failed to fetch image data"))
-										return
-									}
-									
-									continuation.resume(returning: data)
-								}
-							}
-							
-							// Determine image type
-							let imageType: SwiftSamsungFrame.ImageType = (asset.value(forKey: "uniformTypeIdentifier") as? String)?.contains("png") == true ? .png : .jpeg
-							
-							// Upload to TV
-							let contentId = try await self.tvClient.art.upload(imageData, type: imageType, matte: nil)
-							
-							#if canImport(OSLog)
-							self.logger.info("Uploaded asset \(index + 1)/\(assetsFetchResult.count): \(contentId)")
-							#endif
-							
-							added += 1
-							
-							// Update record
-							record.addedCount = added
-							record.skippedDuplicates = skipped
-							record.failedCount = failed
-							self.syncJobs[jobId] = record
-						} catch {
-							#if canImport(OSLog)
-							self.logger.error("Failed to upload asset \(index + 1): \(error.localizedDescription)")
-							#endif
-							failed += 1
-							
-							// Update record
-							record.addedCount = added
-							record.skippedDuplicates = skipped
+							let (imageData, imageType) = try await self.fetchImageData(for: asset)
 							record.failedCount = failed
 							self.syncJobs[jobId] = record
 						}
