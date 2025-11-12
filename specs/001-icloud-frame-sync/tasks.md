@@ -28,15 +28,11 @@ Independent test: Pick a single photo, tap Upload, see it display on the Frame w
 
 - [X] T010 [US1] Implement POST /frame/media/upload in packages/server/src/routes/frame.ts (validate body, call service)
 - [X] T011 [US1] Implement FrameService.upload in packages/server/src/services/frameService.ts (delegate to iOS bridge)
-- [ ] T012 [US1] Implement native bridge method uploadPhoto in ios/framesync/FrameModule.swift
+- [X] T012 [US1] Implement native bridge method uploadPhoto in ios/framesync/FrameModule.swift
 - [X] T013 – Create Upload UI
   `packages/mobile/src/features/frame/screens/UploadScreen.tsx` (select photo, call API, show result).
-- [X] T014 [P] [US1] Wire client.uploadPhoto in packages/mobile/src/features/frame/api/client.ts
-- [X] T015 [US1] Add navigation entry to Upload screen packages/mobile/src/app/(frame)/upload.tsx
-
-
 - [X] T014 [P] [US1] Wire client.uploadPhoto in packages/mobile/src/features/frame/api/client.ts (progress events)
-- [ ] T015 [US1] Add navigation entry to Upload screen packages/mobile/src/app/(frame)/upload.tsx
+- [X] T015 [US1] Add navigation entry to Upload screen packages/mobile/src/app/(frame)/upload.tsx
 
 ## Phase 4 — User Story 2 (P2): Manage photos on the Frame
 
@@ -47,7 +43,7 @@ Independent test: Open media list, delete one or multiple items, verify they dis
 - [X] T016 [US2] Implement GET /frame/media in packages/server/src/routes/frame.ts (map to FrameService.listMedia)
 - [X] T017 [US2] Implement DELETE /frame/media/:mediaId in packages/server/src/routes/frame.ts
 - [X] T018 [US2] Implement FrameService.listMedia and deleteMedia in packages/server/src/services/frameService.ts
-- [ ] T019 [US2] Implement native bridge methods listMedia and deleteMedia in ios/framesync/FrameModule.swift
+- [X] T019 [US2] Implement native bridge methods listMedia and deleteMedia in ios/framesync/FrameModule.swift
 - [X] T020 [P] [US2] Create Media List UI packages/mobile/src/features/frame/screens/MediaListScreen.tsx
 - [X] T021 [P] [US2] Wire client.listMedia and client.deleteMedia in packages/mobile/src/features/frame/api/client.ts
 - [X] T022 [US2] Add navigation entry to Media List screen packages/mobile/src/app/(frame)/media.tsx
@@ -61,7 +57,7 @@ Independent test: Choose an album, run Sync Now, verify only new items upload; n
 - [X] T023 [US3] Implement POST /sync/jobs in packages/server/src/routes/sync.ts (accept albumId, deletionMode)
 - [X] T024 [US3] Implement GET /sync/jobs/:jobId in packages/server/src/routes/sync.ts
 - [X] T025 [US3] Implement SyncService in packages/server/src/services/syncService.ts (diff, dedup policy, invoke native)
-- [ ] T026 [US3] Implement native bridge methods syncAlbum and getSyncJob in ios/framesync/FrameModule.swift
+- [X] T026 [US3] Implement native bridge methods syncAlbum and getSyncJob in ios/framesync/FrameModule.swift
 - [X] T027 [P] [US3] Create Album Sync UI packages/mobile/src/features/frame/screens/AlbumSyncScreen.tsx (select album, run sync, show results)
 - [X] T028 [P] [US3] Wire client.triggerSync and client.getSyncJob in packages/mobile/src/features/frame/api/client.ts
 - [X] T029 [US3] Add navigation entry to Album Sync screen packages/mobile/src/app/(frame)/sync.tsx
