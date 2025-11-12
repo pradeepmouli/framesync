@@ -201,7 +201,7 @@
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/pradeepmouli/swift-samsung-frame.git";
 			requirement = {
-				branch = main;
+				branch = "001-samsung-tv-client";
 				kind = branch;
 			};
 		};
