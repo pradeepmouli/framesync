@@ -13,6 +13,7 @@
 		61BC29AC57686476A0127B51 /* ExpoModulesProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 706F08749687BA52296A713A /* ExpoModulesProvider.swift */; };
 		B9180948613D997056C01ECD /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 54B102D34C17BCE9968C41DD /* PrivacyInfo.xcprivacy */; };
 		BB2F792D24A3F905000567C9 /* Expo.plist in Resources */ = {isa = PBXBuildFile; fileRef = BB2F792C24A3F905000567C9 /* Expo.plist */; };
+	B1F0F00229A9CA0D00F506AB /* SwiftSamsungFrame in Frameworks */ = {isa = PBXBuildFile; productRef = B1F0F00129A9C9AC00F506AB /* SwiftSamsungFrame */; };
 		F11748422D0307B40044C1D9 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F11748412D0307B40044C1D9 /* AppDelegate.swift */; };
 /* End PBXBuildFile section */
 
@@ -37,6 +38,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B1F0F00229A9CA0D00F506AB /* SwiftSamsungFrame in Frameworks */,
 				1482A473546EA30F30A3F6B7 /* libPods-framesync.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -153,6 +155,9 @@
 			dependencies = (
 			);
 			name = framesync;
+			packageProductDependencies = (
+				B1F0F00129A9C9AC00F506AB /* SwiftSamsungFrame */,
+			);
 			productName = framesync;
 			productReference = 13B07F961A680F5B00A75B9A /* framesync.app */;
 			productType = "com.apple.product-type.application";
@@ -179,6 +184,9 @@
 				Base,
 			);
 			mainGroup = 83CBB9F61A601CBA00E9B192;
+			packageReferences = (
+				B1F0F00029A9C9AC00F506AB /* XCRemoteSwiftPackageReference "swift-samsung-frame" */,
+			);
 			productRefGroup = 83CBBA001A601CBA00E9B192 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -187,6 +195,25 @@
 			);
 		};
 /* End PBXProject section */
+
+	/* Begin XCRemoteSwiftPackageReference section */
+		B1F0F00029A9C9AC00F506AB /* XCRemoteSwiftPackageReference "swift-samsung-frame" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/pradeepmouli/swift-samsung-frame.git";
+			requirement = {
+				branch = main;
+				kind = branch;
+			};
+		};
+	/* End XCRemoteSwiftPackageReference section */
+
+	/* Begin XCSwiftPackageProductDependency section */
+		B1F0F00129A9C9AC00F506AB /* SwiftSamsungFrame */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = SwiftSamsungFrame;
+			swiftPackage = B1F0F00029A9C9AC00F506AB /* XCRemoteSwiftPackageReference "swift-samsung-frame" */;
+		};
+	/* End XCSwiftPackageProductDependency section */
 
 /* Begin PBXResourcesBuildPhase section */
 		13B07F8E1A680F5B00A75B9A /* Resources */ = {

@@ -1,16 +1,55 @@
-# FrameSync (Option C: Expo-only)
+# FrameSync
 
-Native iOS app built with Expo that manages photos/art on Samsung Frame TV. The app uses `expo-media-library` to access your photo library (including iCloud assets when available) and will directly communicate with the Frame TV over WebSockets from React Native.
+iOS app with Expo + React Native frontend and Node.js backend to sync photos from iCloud to Samsung Frame TV. Uses Swift native bridge to access Photos framework and control Frame via `swift-samsung-frame`.
 
-## Package
-- `packages/mobile`: Expo + React Native app for iOS
+## Packages
 
-## Quick start
-1. Install deps
-2. Start the Expo app
+- `packages/mobile`: Expo/React Native mobile app
+- `packages/server`: Express server providing Frame API
+- `shared`: Shared TypeScript types and Zod schemas
 
-Implementation is currently paused pending Specify steps. See `.specify/memory` for the constitution, baseline spec, plan, and tasks.
+## Quick Start
 
-## Notes
-- Direct TV control will be implemented via WebSockets in the app (no Node server).
-- Some Samsung models/firmwares behave differently; we’ll iterate based on the P1 flows in the spec.
+### Prerequisites
+
+- Node 20+
+- iOS development environment (Xcode, CocoaPods)
+- Samsung Frame TV on local network
+
+### Installation
+
+```bash
+# Install all dependencies
+npm install
+
+# Install iOS pods
+cd packages/mobile/ios && pod install && cd -
+```
+
+### Running
+
+```bash
+# Terminal 1: Start server
+cd packages/server
+npm run dev
+
+# Terminal 2: Start Expo app
+cd packages/mobile
+npm start
+```
+
+### Environment
+
+Create `.env` in `packages/mobile/`:
+
+```
+EXPO_PUBLIC_API_URL=http://localhost:3000
+```
+
+## Architecture
+
+- **Mobile App**: Upload photos, list/delete Frame media, trigger album sync
+- **Server**: REST API for Frame operations (routes delegate to services, services call native bridge)
+- **Native Bridge**: Swift module (`FrameModule.swift`) accessing Photos framework and `swift-samsung-frame` for TV control
+
+See `specs/001-icloud-frame-sync/` for detailed specification and tasks.

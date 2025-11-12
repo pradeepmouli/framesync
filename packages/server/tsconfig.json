@@ -3,14 +3,11 @@
   "compilerOptions": {
     "outDir": "dist",
     "declaration": true,
+    "module": "NodeNext",
     "types": ["node"],
     "lib": ["ES2022"],
-    "noEmitOnError": true,
-    "baseUrl": ".",
-    "paths": {
-      "@framesync/shared": ["../../shared/src"],
-      "@framesync/shared/*": ["../../shared/src/*"]
-    }
+    "moduleResolution": "NodeNext",
+    "noEmitOnError": true
   },
   "include": ["src"]
 }

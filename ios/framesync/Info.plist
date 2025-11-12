@@ -44,6 +44,16 @@
       <key>NSAllowsLocalNetworking</key>
       <true/>
     </dict>
+    <key>NSBonjourServices</key>
+    <array>
+      <string>_framev2._tcp</string>
+    </array>
+    <key>NSLocalNetworkUsageDescription</key>
+    <string>Framesync needs local network access to connect to your Samsung Frame.</string>
+    <key>NSPhotoLibraryAddUsageDescription</key>
+    <string>Allow Framesync to save curated images back to your photo library.</string>
+    <key>NSPhotoLibraryUsageDescription</key>
+    <string>Framesync needs access to your photo library to upload images to the Frame.</string>
     <key>RCTNewArchEnabled</key>
     <true/>
     <key>UILaunchStoryboardName</key>
