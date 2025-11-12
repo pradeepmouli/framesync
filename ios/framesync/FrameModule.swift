@@ -336,9 +336,21 @@ private actor FrameNativeBridge {
 			uploadRequests[identifier]?.status = .completed
 			
 			// Add to media library cache
+			// Get a user-friendly title: filename if available, else formatted date, else localIdentifier
+			let assetResources = PHAssetResource.assetResources(for: asset)
+			let filename = assetResources.first?.originalFilename
+			let formattedDate: String? = {
+			    guard let date = asset.creationDate else { return nil }
+			    let formatter = DateFormatter()
+			    formatter.dateStyle = .medium
+			    formatter.timeStyle = .short
+			    return formatter.string(from: date)
+			}()
+			let title = filename ?? formattedDate ?? asset.localIdentifier
+			
 			let mediaRecord = FrameMediaRecord(
 				id: contentId,
-				title: asset.localIdentifier,
+				title: title,
 				createdAt: asset.creationDate,
 				width: asset.pixelWidth,
 				height: asset.pixelHeight,
