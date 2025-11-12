@@ -1,8 +1,8 @@
 import {
-	uploadFrameMediaRequestSchema,
-	uploadAcceptedSchema,
-	frameMediaListSchema,
-	deleteResultSchema,
+    deleteResultSchema,
+    frameMediaListSchema,
+    uploadAcceptedSchema,
+    uploadFrameMediaRequestSchema,
 } from '../../../../shared/src/frame/schemas.js';
 
 export class FrameService {

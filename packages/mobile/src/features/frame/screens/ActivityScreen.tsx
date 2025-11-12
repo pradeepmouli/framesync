@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react';
-import { View, Text, FlatList, StyleSheet } from 'react-native';
+import { useEffect, useState } from 'react';
+import { FlatList, StyleSheet, Text, View } from 'react-native';
 
 interface ActivityLogEntry {
 	id: string;

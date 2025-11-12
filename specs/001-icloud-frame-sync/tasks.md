@@ -29,7 +29,7 @@ Independent test: Pick a single photo, tap Upload, see it display on the Frame w
 - [X] T010 [US1] Implement POST /frame/media/upload in packages/server/src/routes/frame.ts (validate body, call service)
 - [X] T011 [US1] Implement FrameService.upload in packages/server/src/services/frameService.ts (delegate to iOS bridge)
 - [ ] T012 [US1] Implement native bridge method uploadPhoto in ios/framesync/FrameModule.swift
-- [X] T013 – Create Upload UI  
+- [X] T013 – Create Upload UI
   `packages/mobile/src/features/frame/screens/UploadScreen.tsx` (select photo, call API, show result).
 - [X] T014 [P] [US1] Wire client.uploadPhoto in packages/mobile/src/features/frame/api/client.ts
 - [X] T015 [US1] Add navigation entry to Upload screen packages/mobile/src/app/(frame)/upload.tsx

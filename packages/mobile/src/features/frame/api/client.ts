@@ -1,20 +1,20 @@
 import axios, { AxiosInstance } from 'axios';
 
 import {
-	frameMediaListSchema,
-	uploadFrameMediaRequestSchema,
-	uploadAcceptedSchema,
-	deleteResultSchema,
-	triggerSyncRequestSchema,
-	syncAcceptedSchema,
-	syncJobSchema,
-	type FrameMedia,
-	type UploadFrameMediaRequest,
-	type UploadAccepted,
-	type DeleteResult,
-	type TriggerSyncRequest,
-	type SyncAccepted,
-	type SyncJob,
+    deleteResultSchema,
+    frameMediaListSchema,
+    syncAcceptedSchema,
+    syncJobSchema,
+    triggerSyncRequestSchema,
+    uploadAcceptedSchema,
+    uploadFrameMediaRequestSchema,
+    type DeleteResult,
+    type FrameMedia,
+    type SyncAccepted,
+    type SyncJob,
+    type TriggerSyncRequest,
+    type UploadAccepted,
+    type UploadFrameMediaRequest,
 } from '../types';
 
 export class FrameApiClient {

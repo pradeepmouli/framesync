@@ -1,12 +1,12 @@
 import { useState } from 'react';
 import {
-	View,
-	Text,
-	Button,
-	StyleSheet,
-	ActivityIndicator,
-	Alert,
-	TextInput,
+    ActivityIndicator,
+    Alert,
+    Button,
+    StyleSheet,
+    Text,
+    TextInput,
+    View,
 } from 'react-native';
 
 import { FrameApiClient } from '../api/client';

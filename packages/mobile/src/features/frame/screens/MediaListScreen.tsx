@@ -1,13 +1,13 @@
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import {
-	View,
-	Text,
-	FlatList,
-	Button,
-	StyleSheet,
-	ActivityIndicator,
-	Alert,
-	TouchableOpacity,
+    ActivityIndicator,
+    Alert,
+    Button,
+    FlatList,
+    StyleSheet,
+    Text,
+    TouchableOpacity,
+    View,
 } from 'react-native';
 
 import { FrameApiClient } from '../api/client';

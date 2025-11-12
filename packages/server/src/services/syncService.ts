@@ -1,7 +1,7 @@
 import {
-	triggerSyncRequestSchema,
-	syncAcceptedSchema,
-	syncJobSchema,
+    syncAcceptedSchema,
+    syncJobSchema,
+    triggerSyncRequestSchema,
 } from '../../../../shared/src/frame/schemas.js';
 
 export class SyncService {

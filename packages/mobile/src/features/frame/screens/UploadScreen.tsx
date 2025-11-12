@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { View, Text, Button, StyleSheet, ActivityIndicator, Alert } from 'react-native';
+import { ActivityIndicator, Alert, Button, StyleSheet, Text, View } from 'react-native';
 
 import { FrameApiClient } from '../api/client';
 
