@@ -56,4 +56,27 @@ EXPO_PUBLIC_API_URL=http://localhost:3000
 - **Server**: REST API for Frame operations (routes delegate to services, services call native bridge)
 - **Native Bridge**: Swift module (`FrameModule.swift`) accessing Photos framework and `swift-samsung-frame` for TV control
 
+## CI/CD
+
+This project uses GitHub Actions for continuous integration and deployment:
+
+- **Lint**: Code quality checks with oxlint
+- **Build**: TypeScript compilation for server and shared packages
+- **Test**: Automated testing with vitest
+- **Verify**: Comprehensive check combining lint, typecheck, build, and test
+- **Release**: Automated releases triggered by version tags
+
+See `.github/workflows/README.md` for detailed workflow documentation.
+
+### Local Development Checks
+
+Before pushing code, ensure all checks pass:
+
+```bash
+pnpm lint       # Run linter
+pnpm typecheck  # Type checking
+pnpm test       # Run tests
+pnpm build      # Build packages
+```
+
 See `specs/001-icloud-frame-sync/` for detailed specification and tasks.
