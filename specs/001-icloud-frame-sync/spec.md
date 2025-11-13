@@ -71,7 +71,7 @@ Acceptance Scenarios:
 - FR-003: The system MUST enable selection of a single photo and perform a one-off upload to the selected Frame, with visible progress and completion/failure status.
 - FR-004: The system MUST present a browsable list of images currently stored on the Frame and allow single- and multi-select deletion with confirmation.
 - FR-005: The system MUST allow users to select one iCloud album for sync and initiate a manual "Sync Now" that uploads missing items only.
-- FR-006: The system MUST avoid duplicates on the Frame using a hybrid deduplication policy: first a quick pre-check (filename + size), and when a potential duplicate is detected, verify using a deterministic content fingerprint. When a fingerprint match exists on the Frame, skip upload and record this in activity; when name/size match but the fingerprint does not, treat as distinct and upload.
+- FR-006: The system MUST avoid duplicates on the Frame using a hybrid deduplication policy: first a quick pre-check (filename + size), and when a potential duplicate is detected, verify using a deterministic content fingerprint (SHA-256 hash of image data). When a fingerprint match exists on the Frame, skip upload and record this in activity; when name/size match but the fingerprint does not, treat as distinct and upload.
 - FR-007: The system MUST make deletion behavior during album sync configurable per album/device: default is Add-only (never delete). When "Mirror deletions" is enabled, items removed from the source album are removed from the Frame during sync, with guardrails (e.g., confirmation for bulk removals).
 - FR-008: The system MUST clearly report errors (offline, permission denied, insufficient storage) and provide user-actionable next steps.
 - FR-009: The system MUST provide basic activity logging or history visible to the user (e.g., last sync time, items uploaded, failed count) without exposing technical internals.
@@ -88,7 +88,7 @@ Acceptance Scenarios:
 
 ### Measurable Outcomes
 
-- SC-001: A single 5–8 MB photo upload completes successfully within 10 seconds on typical home Wi‑Fi (>50 Mbps) in 95% of attempts.
+- SC-001: A single 5–8 MB photo upload completes successfully within 10 seconds on typical home Wi‑Fi (≥25 Mbps download, ≥10 Mbps upload) in 95% of attempts.
 - SC-002: Frame media list loads and becomes interactive within 3 seconds for up to 500 items in 95% of attempts.
 - SC-003: Initial album sync of 100 photos completes within 10 minutes on typical Wi‑Fi, with zero duplicates and a clear summary shown.
 - SC-004: Subsequent incremental sync adds newly added album photos with zero duplicates and completes within 2 minutes for up to 20 new items.

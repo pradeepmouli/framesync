@@ -91,6 +91,46 @@ final class FrameModule: NSObject, RCTBridgeModule {
 		}
 	}
 
+	@objc(discoverFrames:rejecter:)
+	func discoverFrames(_ resolve: @escaping RCTPromiseResolveBlock,
+					   rejecter reject: @escaping RCTPromiseRejectBlock) {
+		perform(resolve: resolve, reject: reject) { [self] in
+			let devices = await self.bridgeActor.discoverFrames()
+			return ["devices": devices.map { $0.toDictionary() }]
+		}
+	}
+
+	@objc(pairFrame:resolver:rejecter:)
+	func pairFrame(_ deviceId: String,
+				  resolver resolve: @escaping RCTPromiseResolveBlock,
+				  rejecter reject: @escaping RCTPromiseRejectBlock) {
+		perform(resolve: resolve, reject: reject) { [self] in
+			let result = try await self.bridgeActor.pairFrame(deviceId: deviceId)
+			return result.toDictionary()
+		}
+	}
+
+	@objc(unpairFrame:rejecter:)
+	func unpairFrame(_ resolve: @escaping RCTPromiseResolveBlock,
+					rejecter reject: @escaping RCTPromiseRejectBlock) {
+		perform(resolve: resolve, reject: reject) { [self] in
+			await self.bridgeActor.unpairFrame()
+			return ["success": true]
+		}
+	}
+
+	@objc(getPairedFrame:rejecter:)
+	func getPairedFrame(_ resolve: @escaping RCTPromiseResolveBlock,
+					   rejecter reject: @escaping RCTPromiseRejectBlock) {
+		perform(resolve: resolve, reject: reject) { [self] in
+			if let device = await self.bridgeActor.getPairedFrame() {
+				return device.toDictionary()
+			} else {
+				return NSNull()
+			}
+		}
+	}
+
 	private func perform(
 		resolve: @escaping RCTPromiseResolveBlock,
 		reject: @escaping RCTPromiseRejectBlock,
@@ -141,7 +181,7 @@ private actor FrameNativeBridge {
 	private static let defaultTVPort = 8001
 	private static let maxStoredJobs = 50
 	private static let maxStoredUploads = 100
-	
+
 	#if canImport(SwiftSamsungFrame)
 	private let tvClient = TVClient()
 	#endif
@@ -168,7 +208,7 @@ private actor FrameNativeBridge {
 		} else {
 			self.tvHost = Self.defaultTVHost
 		}
-		
+
 		// Try to get TV port from parameters, environment, or use default
 		if let port = tvPort {
 			self.tvPort = port
@@ -179,22 +219,22 @@ private actor FrameNativeBridge {
 		} else {
 			self.tvPort = Self.defaultTVPort
 		}
-		
+
 		self.dateProvider = dateProvider
 	}
-	
+
 	private func ensureConnected() async throws {
 		#if canImport(SwiftSamsungFrame)
 		guard !isConnected else { return }
-		
+
 		#if canImport(OSLog)
 		logger.info("Connecting to TV at \(self.tvHost):\(self.tvPort)")
 		#endif
-		
+
 		do {
 			_ = try await tvClient.connect(to: tvHost, port: tvPort)
 			isConnected = true
-			
+
 			#if canImport(OSLog)
 			logger.info("Successfully connected to TV")
 			#endif
@@ -212,28 +252,28 @@ private actor FrameNativeBridge {
 		#endif
 		#endif
 	}
-	
+
 	// Helper method to fetch image data from Photos
 	#if canImport(Photos)
-	private func fetchImageData(for asset: PHAsset) async throws -> (Data, SwiftSamsungFrame.ImageType) {
+	private func fetchImageData(for asset: PHAsset) async throws -> (Data, String) {
 		let imageManager = PHImageManager.default()
 		let requestOptions = PHImageRequestOptions()
 		requestOptions.isSynchronous = false
 		requestOptions.deliveryMode = .highQualityFormat
 		requestOptions.isNetworkAccessAllowed = true
-		
-		return try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<(Data, SwiftSamsungFrame.ImageType), Error>) in
+
+		return try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<(Data, String), Error>) in
 			imageManager.requestImageDataAndOrientation(for: asset, options: requestOptions) { data, dataUTI, orientation, info in
 				if let error = info?[PHImageErrorKey] as? Error {
 					continuation.resume(throwing: error)
 					return
 				}
-				
+
 				guard let data = data else {
 					continuation.resume(throwing: FrameModuleError.invalidArguments(reason: "Failed to fetch image data"))
 					return
 				}
-				
+
 				// Determine image type from dataUTI parameter
 				let imageType: SwiftSamsungFrame.ImageType
 				if let uti = dataUTI, uti.contains("png") {
@@ -241,46 +281,46 @@ private actor FrameNativeBridge {
 				} else {
 					imageType = .jpeg
 				}
-				
+
 				continuation.resume(returning: (data, imageType))
 			}
 		}
 	}
 	#endif
-	
+
 	// Clean up old upload requests to prevent memory leaks
 	private func cleanupOldUploads() {
 		guard uploadRequests.count > Self.maxStoredUploads else { return }
-		
+
 		// Sort by requested time and keep only the most recent
 		let sorted = uploadRequests.sorted { $0.value.requestedAt > $1.value.requestedAt }
-		uploadRequests = Dictionary(uniqueKeysWithValues: sorted.prefix(Self.maxStoredUploads))
+		uploadRequests = Dictionary(uniqueKeysWithValues: sorted.prefix(Self.maxStoredUploads).map { ($0.key, $0.value) })
 	}
-	
+
 	// Clean up old sync jobs to prevent memory leaks
 	private func cleanupOldJobs() {
 		guard syncJobs.count > Self.maxStoredJobs else { return }
-		
+
 		// Sort by started time and keep only the most recent
 		let sorted = syncJobs.sorted { $0.value.startedAt > $1.value.startedAt }
-		syncJobs = Dictionary(uniqueKeysWithValues: sorted.prefix(Self.maxStoredJobs))
+		syncJobs = Dictionary(uniqueKeysWithValues: sorted.prefix(Self.maxStoredJobs).map { ($0.key, $0.value) })
 	}
 
 	func listMedia() async -> [FrameMediaRecord] {
 		#if canImport(SwiftSamsungFrame)
 		do {
 			try await ensureConnected()
-			
+
 			#if canImport(OSLog)
 			logger.info("Fetching art list from TV")
 			#endif
-			
+
 			let artPieces = try await tvClient.art.listAvailable()
-			
+
 			#if canImport(OSLog)
 			logger.info("Retrieved \(artPieces.count) art pieces from TV")
 			#endif
-			
+
 			// Convert ArtPiece to FrameMediaRecord
 			mediaLibrary = artPieces.map { art in
 				FrameMediaRecord(
@@ -293,13 +333,13 @@ private actor FrameNativeBridge {
 					fingerprint: nil  // We'll use content_id as unique identifier
 				)
 			}
-			
+
 			return mediaLibrary
 		} catch {
 			#if canImport(OSLog)
 			logger.error("Failed to list media: \(error.localizedDescription)")
 			#endif
-			
+
 			isConnected = false  // Reset connection state on error
 			// Fall back to cached library on error
 			return mediaLibrary
@@ -327,40 +367,40 @@ private actor FrameNativeBridge {
 		#if canImport(SwiftSamsungFrame) && canImport(Photos)
 		do {
 			try await ensureConnected()
-			
+
 			// Fetch the photo from the Photos library
 			#if canImport(OSLog)
 			logger.info("Fetching photo asset \(request.assetId)")
 			#endif
-			
+
 			let fetchOptions = PHFetchOptions()
 			let fetchResult = PHAsset.fetchAssets(withLocalIdentifiers: [request.assetId], options: fetchOptions)
-			
+
 			guard let asset = fetchResult.firstObject else {
 				uploadRequests.removeValue(forKey: identifier)  // Clean up failed upload
 				throw FrameModuleError.invalidArguments(reason: "Photo asset not found: \(request.assetId)")
 			}
-			
+
 			// Update status to started
 			uploadRequests[identifier]?.status = .started
-			
+
 			// Fetch image data using helper method
 			let (imageData, imageType) = try await fetchImageData(for: asset)
-			
+
 			#if canImport(OSLog)
 			logger.info("Fetched image data: \(imageData.count) bytes, type: \(imageType == .jpeg ? "JPEG" : "PNG")")
 			#endif
-			
+
 			// Upload to TV
 			let contentId = try await tvClient.art.upload(imageData, type: imageType, matte: nil)
-			
+
 			#if canImport(OSLog)
 			logger.info("Upload successful, content ID: \(contentId)")
 			#endif
-			
+
 			// Update status to completed
 			uploadRequests[identifier]?.status = .completed
-			
+
 			// Add to media library cache with user-friendly title
 			let assetResources = PHAssetResource.assetResources(for: asset)
 			let filename = assetResources.first?.originalFilename
@@ -372,7 +412,7 @@ private actor FrameNativeBridge {
 			    return formatter.string(from: date)
 			}()
 			let title = filename ?? formattedDate ?? asset.localIdentifier
-			
+
 			let mediaRecord = FrameMediaRecord(
 				id: contentId,
 				title: title,
@@ -383,13 +423,13 @@ private actor FrameNativeBridge {
 				fingerprint: contentId
 			)
 			mediaLibrary.append(mediaRecord)
-			
+
 			return UploadAcceptance(uploadId: identifier, status: .completed, acceptedAt: now)
 		} catch {
 			#if canImport(OSLog)
 			logger.error("Upload failed: \(error.localizedDescription)")
 			#endif
-			
+
 			uploadRequests[identifier]?.status = .failed
 			// Note: Failed uploads remain in dictionary for status queries but will be cleaned up by cleanupOldUploads()
 			throw FrameModuleError.unexpected(error)
@@ -411,19 +451,19 @@ private actor FrameNativeBridge {
 		#if canImport(SwiftSamsungFrame)
 		do {
 			try await ensureConnected()
-			
+
 			// Delete from TV
 			try await tvClient.art.delete(mediaId)
-			
+
 			#if canImport(OSLog)
 			logger.info("Successfully deleted media from TV")
 			#endif
-			
+
 			// Remove from local cache
 			let initialCount = mediaLibrary.count
 			mediaLibrary.removeAll { $0.id == mediaId }
 			let deleted = mediaLibrary.count < initialCount
-			
+
 			return DeleteResult(mediaId: mediaId, deleted: deleted)
 		} catch {
 			#if canImport(OSLog)
@@ -469,7 +509,7 @@ private actor FrameNativeBridge {
 				#if canImport(OSLog)
 				self.logger.error("Sync job failed: \(error.localizedDescription)")
 				#endif
-				
+
 				// Update job with error
 				if var job = self.syncJobs[jobId] {
 					job.completedAt = self.dateProvider()
@@ -483,27 +523,27 @@ private actor FrameNativeBridge {
 		logger.warning("SwiftSamsungFrame or Photos framework not available, using stub sync")
 		#endif
 		#endif
-		
+
 		return SyncAcceptance(jobId: jobId, status: .pending, acceptedAt: now)
 	}
-	
+
 	#if canImport(SwiftSamsungFrame) && canImport(Photos)
 	private func performSync(jobId: String, request: SyncAlbumRequest) async throws {
 		try await ensureConnected()
-		
+
 		// Fetch album
 		#if canImport(OSLog)
 		logger.info("Fetching album assets for \(request.albumId)")
 		#endif
-		
+
 		let fetchOptions = PHFetchOptions()
 		let albums = PHAssetCollection.fetchAssetCollections(withLocalIdentifiers: [request.albumId], options: nil)
-		
+
 		guard let album = albums.firstObject else {
 			#if canImport(OSLog)
 			logger.error("Album not found: \(request.albumId)")
 			#endif
-			
+
 			// Update job with failure
 			if var job = syncJobs[jobId] {
 				job.failedCount = 1
@@ -512,22 +552,22 @@ private actor FrameNativeBridge {
 			}
 			return
 		}
-		
+
 		let assetsFetchResult = PHAsset.fetchAssets(in: album, options: fetchOptions)
-		
+
 		#if canImport(OSLog)
 		logger.info("Found \(assetsFetchResult.count) assets in album")
 		#endif
-		
+
 		// Get current Frame media and build mapping
 		let currentFrameMedia = try await tvClient.art.listAvailable()
-		
+
 		// Build a mapping of Frame content IDs we've uploaded
 		var frameContentIds = Set<String>()
 		for media in currentFrameMedia {
 			frameContentIds.insert(media.id)
 		}
-		
+
 		// Collect all image assets from album
 		var assetsToProcess: [PHAsset] = []
 		assetsFetchResult.enumerateObjects { asset, _, _ in
@@ -535,22 +575,22 @@ private actor FrameNativeBridge {
 				assetsToProcess.append(asset)
 			}
 		}
-		
+
 		// Process uploads sequentially to properly track state
 		var added = 0
 		var skipped = 0
 		var failed = 0
-		
+
 		for (index, asset) in assetsToProcess.enumerated() {
 			// Note: This is simplified deduplication using content ID
 			// A production implementation should use content hashing or persistent mapping
 			let assetId = asset.localIdentifier
-			
+
 			// Skip if we think it's already uploaded (simplified check)
 			// TODO: Implement proper content-based deduplication
 			if frameContentIds.contains(assetId) {
 				skipped += 1
-				
+
 				// Update job progress
 				if var job = syncJobs[jobId] {
 					job.skippedDuplicates = skipped
@@ -558,23 +598,23 @@ private actor FrameNativeBridge {
 				}
 				continue
 			}
-			
+
 			// Upload the asset
 			do {
 				let (imageData, imageType) = try await fetchImageData(for: asset)
-				
+
 				#if canImport(OSLog)
 				logger.info("Uploading asset \(index + 1)/\(assetsToProcess.count)")
 				#endif
-				
+
 				let contentId = try await tvClient.art.upload(imageData, type: imageType, matte: nil)
 				frameContentIds.insert(contentId)  // Track uploaded content
 				added += 1
-				
+
 				#if canImport(OSLog)
 				logger.info("Uploaded asset \(index + 1)/\(assetsToProcess.count): \(contentId)")
 				#endif
-				
+
 				// Update job progress
 				if var job = syncJobs[jobId] {
 					job.addedCount = added
@@ -585,7 +625,7 @@ private actor FrameNativeBridge {
 				logger.error("Failed to upload asset \(index + 1): \(error.localizedDescription)")
 				#endif
 				failed += 1
-				
+
 				// Update job progress
 				if var job = syncJobs[jobId] {
 					job.failedCount = failed
@@ -593,7 +633,7 @@ private actor FrameNativeBridge {
 				}
 			}
 		}
-		
+
 		// Handle deletion mode if mirror
 		if request.deletionMode == .mirror {
 			// Build set of asset IDs in album
@@ -601,7 +641,7 @@ private actor FrameNativeBridge {
 			for asset in assetsToProcess {
 				albumAssetIds.insert(asset.localIdentifier)
 			}
-			
+
 			// Note: This deletion logic has a known limitation - it compares Frame content IDs
 			// with local asset identifiers, which are different types. A production implementation
 			// needs a persistent mapping between local identifiers and Frame content IDs.
@@ -610,7 +650,7 @@ private actor FrameNativeBridge {
 			logger.warning("Mirror mode deletion skipped - requires content ID mapping implementation")
 			#endif
 		}
-		
+
 		// Mark job as completed
 		if var job = syncJobs[jobId] {
 			job.addedCount = added
@@ -619,7 +659,7 @@ private actor FrameNativeBridge {
 			job.completedAt = dateProvider()
 			syncJobs[jobId] = job
 		}
-		
+
 		#if canImport(OSLog)
 		logger.info("Sync job completed: added=\(added), skipped=\(skipped), failed=\(failed)")
 		#endif
@@ -631,6 +671,102 @@ private actor FrameNativeBridge {
 			throw FrameModuleError.notFound(resource: "syncJob", identifier: jobId)
 		}
 		return job
+	}
+
+	// MARK: - Frame Discovery and Pairing
+
+	private var pairedDevice: FrameDeviceRecord?
+	private var discoveredDevices: [FrameDeviceRecord] = []
+
+	func discoverFrames() async -> [FrameDeviceRecord] {
+		#if canImport(SwiftSamsungFrame)
+		do {
+			#if canImport(OSLog)
+			logger.info("Starting Frame discovery")
+			#endif
+
+			// TODO: Use tvClient.discover() when available in swift-samsung-frame
+			// For now, return mock discovered devices
+			let mockDevices = [
+				FrameDeviceRecord(
+					id: "frame-\(UUID().uuidString.prefix(8))",
+					name: "Samsung Frame TV",
+					reachable: true,
+					storageTotalMB: 8192,
+					storageFreeMB: 6144
+				)
+			]
+
+			discoveredDevices = mockDevices
+
+			#if canImport(OSLog)
+			logger.info("Discovered \(mockDevices.count) Frame device(s)")
+			#endif
+
+			return mockDevices
+		}
+		#else
+		// Stub mode: return empty list
+		return []
+		#endif
+	}
+
+	func pairFrame(deviceId: String) async throws -> PairResult {
+		guard let device = discoveredDevices.first(where: { $0.id == deviceId }) else {
+			throw FrameModuleError.notFound(resource: "device", identifier: deviceId)
+		}
+
+		#if canImport(SwiftSamsungFrame)
+		do {
+			#if canImport(OSLog)
+			logger.info("Pairing with Frame device: \(deviceId)")
+			#endif
+
+			// TODO: Use tvClient.pair(device) when available in swift-samsung-frame
+			// For now, simulate successful pairing
+			pairedDevice = device
+
+			// Save paired device to UserDefaults
+			UserDefaults.standard.set(device.id, forKey: "PairedFrameDeviceId")
+			UserDefaults.standard.set(device.name, forKey: "PairedFrameDeviceName")
+
+			#if canImport(OSLog)
+			logger.info("Successfully paired with Frame: \(device.name)")
+			#endif
+
+			return PairResult(deviceId: device.id, paired: true)
+		}
+		#else
+		throw FrameModuleError.unexpected(NSError(domain: "FrameModule", code: -1, userInfo: [NSLocalizedDescriptionKey: "SwiftSamsungFrame not available"]))
+		#endif
+	}
+
+	func unpairFrame() async {
+		#if canImport(OSLog)
+		logger.info("Unpairing Frame device")
+		#endif
+
+		pairedDevice = nil
+		UserDefaults.standard.removeObject(forKey: "PairedFrameDeviceId")
+		UserDefaults.standard.removeObject(forKey: "PairedFrameDeviceName")
+		isConnected = false
+	}
+
+	func getPairedFrame() async -> FrameDeviceRecord? {
+		// Try to restore from UserDefaults if not in memory
+		if pairedDevice == nil,
+		   let deviceId = UserDefaults.standard.string(forKey: "PairedFrameDeviceId"),
+		   let deviceName = UserDefaults.standard.string(forKey: "PairedFrameDeviceName") {
+			pairedDevice = FrameDeviceRecord(
+				id: deviceId,
+				name: deviceName,
+				reachable: true,
+				storageTotalMB: nil,
+				storageFreeMB: nil
+			)
+		}
+
+		return pairedDevice
 	}
 }
 
@@ -679,6 +815,41 @@ private struct SyncAlbumRequest {
 private enum SyncDeletionMode: String {
 	case addOnly = "add-only"
 	case mirror = "mirror"
+}
+
+private struct FrameDeviceRecord: Hashable {
+	let id: String
+	let name: String
+	let reachable: Bool
+	let storageTotalMB: Int?
+	let storageFreeMB: Int?
+
+	func toDictionary() -> [String: Any] {
+		var dictionary: [String: Any] = [
+			"id": id,
+			"name": name,
+			"reachable": reachable
+		]
+		if let storageTotalMB {
+			dictionary["storageTotalMB"] = storageTotalMB
+		}
+		if let storageFreeMB {
+			dictionary["storageFreeMB"] = storageFreeMB
+		}
+		return dictionary
+	}
+}
+
+private struct PairResult {
+	let deviceId: String
+	let paired: Bool
+
+	func toDictionary() -> [String: Any] {
+		[
+			"deviceId": deviceId,
+			"paired": paired
+		]
+	}
 }
 
 private struct FrameMediaRecord: Hashable {

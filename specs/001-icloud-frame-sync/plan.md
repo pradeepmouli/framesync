@@ -62,29 +62,33 @@ specs/[###-feature]/
 ```
 
 ### Source Code (repository root)
-<!--
-  ACTION REQUIRED: Replace the placeholder tree below with the concrete layout
-  for this feature. Delete unused options and expand the chosen structure with
-  real paths (e.g., apps/admin, packages/something). The delivered plan must
-  not include Option labels.
--->
 
 ```text
 packages/
   mobile/                # Expo app (iOS focus for MVP)
-    src/features/frame/  # UI flows for upload, list/delete, album sync
+    src/
+      features/frame/    # UI flows for upload, list/delete, album sync, pairing, settings
+      app/(frame)/       # Expo Router navigation entries
   server/                # Express API for Frame operations
-shared/                  # Shared types/schemas (zod)
+    src/
+      routes/            # Express routes (frame.ts, sync.ts)
+      services/          # Business logic (frameService.ts, syncService.ts)
 
-ios/                     # Native iOS project (bridge hooks to swift-samsung-frame)
-  framesync/             # App target; add native module shims if needed
+shared/                  # Shared types/schemas (zod)
+  src/frame/schemas.ts   # Contract schemas
+
+ios/                     # Native iOS project (bridge to swift-samsung-frame)
+  framesync/             # App target; FrameModule.swift native bridge
 
 specs/001-icloud-frame-sync/
+  spec.md
   plan.md
   research.md
   data-model.md
   quickstart.md
+  tasks.md
   contracts/
+    openapi.yaml
 ```
 
 **Structure Decision**: Mobile + API structure. React Native app in `packages/mobile` drives UX; server endpoints in `packages/server`; native iOS integration via `swift-samsung-frame` with a light bridge.

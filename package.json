@@ -4,7 +4,9 @@
   "private": true,
   "description": "Monorepo: iOS app (Expo) + Node server to sync photos to Samsung Frame TV",
   "workspaces": [
-    "packages/mobile"
+    "packages/mobile",
+    "packages/server",
+    "shared"
   ],
   "scripts": {
     "build": "npm --workspace @framesync/mobile run build || true",
@@ -21,7 +23,7 @@
   },
   "devDependencies": {
     "oxfmt": "^0.2.0",
-    "oxlint": "^0.9.5"
+    "oxlint": "^0.9.10"
   },
   "dependencies": {
     "expo": "~54.0.22",

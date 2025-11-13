@@ -30,7 +30,10 @@ export const createServer = () => {
 	return app;
 };
 
-if (require.main === module) {
+// ESM equivalent of require.main === module
+const isMainModule = import.meta.url === `file://${process.argv[1]}`;
+
+if (isMainModule) {
 	const port = Number(process.env.PORT ?? 3000);
 	const app = createServer();
 

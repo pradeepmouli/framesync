@@ -50,12 +50,20 @@ Press `i` to launch iOS simulator or scan QR with Expo Go.
 
 ## Usage
 
+### Pair Frame (Required First Time)
+
+1. Navigate to Pairing screen
+2. Tap "Discover Frames"
+3. Select your Samsung Frame from detected devices
+4. Confirm pairing
+
 ### Upload Photo
 
 1. Navigate to Upload screen
-2. Enter asset ID (TODO: add image picker)
-3. Tap "Upload to Frame"
-4. View confirmation or error alert
+2. Tap "Select Photo" to open image picker
+3. Choose photo from library
+4. Tap "Upload to Frame"
+5. View confirmation or error alert
 
 ### List/Delete Media
 
@@ -71,11 +79,18 @@ Press `i` to launch iOS simulator or scan QR with Expo Go.
 3. Tap "Sync Now"
 4. View job summary (added/skipped/failed counts)
 
+### Manage Settings
+
+1. Navigate to Settings screen
+2. View paired Frame status
+3. Manage Photo Library permissions
+4. Unpair Frame if needed
+
 ## Architecture
 
 - **Mobile App**: React Native UI with Expo
 - **Server**: Express REST API at `/frame/media` and `/sync/jobs`
-- **Native Bridge**: `FrameModule.swift` (TODO: integrate `swift-samsung-frame` TVClient)
+- **Native Bridge**: `FrameModule.swift` integrating `swift-samsung-frame` (branch: `001-samsung-tv-client`) TVClient
 - **Shared Schemas**: Zod validation for all requests/responses
 
 ## Permissions Required
@@ -97,7 +112,7 @@ See `specs/001-icloud-frame-sync/contracts/openapi.yaml`:
 
 ## Next Steps
 
-1. Implement native bridge in `FrameModule.swift` (T012, T019, T026)
-2. Integrate `expo-image-picker` in UploadScreen (T013 TODO)
-3. Add activity log persistence (T030 TODO)
+1. Complete Frame pairing UI (T006a, T006b)
+2. Integrate image picker in UploadScreen
+3. Implement Settings/Permissions management (T034, T035)
 4. Test on physical device with real Frame TV

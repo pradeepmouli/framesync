@@ -19,7 +19,7 @@ Relationships:
 - width?: number
 - height?: number
 - sizeBytes?: number
-- fingerprint?: string (content hash)
+- fingerprint?: string (SHA-256 hash of image data for deduplication)
 
 Relationships:
 - Belongs to FrameDevice
@@ -37,7 +37,7 @@ Relationships:
 - height?: number
 - sizeBytes?: number
 - format: 'jpeg' | 'heic' | 'png' | 'raw' | 'other'
-- fingerprint?: string (content hash)
+- fingerprint?: string (SHA-256 hash for deduplication)
 
 ### SyncJob
 - id: string (uuid)

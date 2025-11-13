@@ -13,13 +13,17 @@ iOS app with Expo + React Native frontend and Node.js backend to sync photos fro
 ### Prerequisites
 
 - Node 20+
+- pnpm (recommended) or npm
 - iOS development environment (Xcode, CocoaPods)
 - Samsung Frame TV on local network
 
 ### Installation
 
 ```bash
-# Install all dependencies
+# Install dependencies (pnpm recommended)
+pnpm install
+
+# Or with npm
 npm install
 
 # Install iOS pods
@@ -31,11 +35,11 @@ cd packages/mobile/ios && pod install && cd -
 ```bash
 # Terminal 1: Start server
 cd packages/server
-npm run dev
+pnpm run dev  # or: npm run dev
 
 # Terminal 2: Start Expo app
 cd packages/mobile
-npm start
+pnpm start    # or: npm start
 ```
 
 ### Environment

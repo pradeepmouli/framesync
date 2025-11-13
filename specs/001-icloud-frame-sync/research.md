@@ -10,11 +10,12 @@ This document captures resolved technical decisions for implementing single-phot
 ## Decisions
 
 ### D1: Frame Integration Approach
-- **Decision**: Use `swift-samsung-frame` directly via a lightweight native module bridge (Swift → React Native) for iOS.
-- **Rationale**: Reuses specialized logic for Frame communication; reduces time-to-market vs building protocol code.
+- **Decision**: Use `swift-samsung-frame` (branch: `001-samsung-tv-client`) directly via a lightweight native module bridge (Swift → React Native) for iOS.
+- **Rationale**: Reuses specialized logic for Frame communication; reduces time-to-market vs building protocol code. The `001-samsung-tv-client` branch provides the latest TV client implementation.
 - **Alternatives Considered**:
   - Custom protocol implementation in Swift: Higher maintenance, protocol reverse-engineering risk.
   - Pure JavaScript via local network calls only: Lacks direct Frame control features exposed by library.
+- **Implementation Note**: SPM dependency added in ios/framesync.xcodeproj pointing to the `001-samsung-tv-client` branch of swift-samsung-frame repository.
 
 ### D2: Single-Frame MVP
 - **Decision**: Support exactly one paired Frame in MVP; future multi-device design reserved.

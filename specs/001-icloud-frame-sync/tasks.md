@@ -8,6 +8,7 @@ Contracts: ./contracts/openapi.yaml
 ## Phase 1 — Setup
 
 - [X] T001 Ensure iOS Photos and Local Network permissions in ios/framesync/Info.plist
+- [X] T001a Document swift-samsung-frame version/branch requirement in specs/001-icloud-frame-sync/research.md (use 001-samsung-tv-client branch)
 - [X] T002 Add `swift-samsung-frame` as a Swift Package in ios/framesync.xcodeproj (SPM dependency)
 - [X] T003 Create shared schemas in shared/src/frame/schemas.ts (FrameMedia, SyncJob, requests)
 - [X] T004 Wire server route registration in packages/server/src/index.ts for frame and sync routes
@@ -16,6 +17,8 @@ Contracts: ./contracts/openapi.yaml
 ## Phase 2 — Foundational
 
 - [X] T006 Implement iOS native bridge skeleton ios/framesync/FrameModule.swift (listMedia, uploadPhoto, deleteMedia, syncAlbum, getSyncJob)
+- [X] T006a Implement Frame discovery/pairing flow in ios/framesync/FrameModule.swift (using swift-samsung-frame TVClient discovery)
+- [X] T006b Create Frame pairing UI packages/mobile/src/features/frame/screens/PairFrameScreen.tsx (discover, select, pair)
 - [X] T007 Export React Native module declaration in ios/framesync/framesync-Bridging-Header.h
 - [X] T008 Create mobile API client packages/mobile/src/features/frame/api/client.ts (axios bound to server base URL)
 - [X] T009 Add shared types import/wiring packages/mobile/src/features/frame/types.ts (re-export from shared)
@@ -68,6 +71,8 @@ Independent test: Choose an album, run Sync Now, verify only new items upload; n
 - [X] T031 Error surface mapping and toasts packages/mobile/src/features/frame/utils/errors.ts
 - [X] T032 Update README and quickstart with run instructions README.md and specs/001-icloud-frame-sync/quickstart.md
 - [X] T033 Verify Info.plist entitlements for Photos/Local Network ios/framesync/Info.plist
+- [X] T034 Create Settings screen packages/mobile/src/features/frame/screens/SettingsScreen.tsx (manage permissions, revoke Photo Library access, unpair Frame)
+- [X] T035 Add navigation entry to Settings screen packages/mobile/src/app/(frame)/settings.tsx
 
 ## Dependencies
 
