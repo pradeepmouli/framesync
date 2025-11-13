@@ -34,12 +34,3 @@ jobs:
 
       - name: Run all tests
         run: pnpm test
-
-      - name: Test server package
-        run: pnpm --filter @framesync/server test
-
-      - name: Test mobile package
-        run: pnpm --filter @framesync/mobile test
-
-      - name: Test shared package
-        run: pnpm --filter @framesync/shared test
