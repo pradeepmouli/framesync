@@ -1,0 +1,15 @@
+{
+  "originHash" : "ddb0ee37df6bed9429ce837cc7fc0a0d16a4ab7a380af88c44fbe360cbd6addf",
+  "pins" : [
+    {
+      "identity" : "swift-samsung-frame",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/pradeepmouli/swift-samsung-frame.git",
+      "state" : {
+        "branch" : "001-samsung-tv-client",
+        "revision" : "b6b19e2647fbb7bbc64d1e79653b0753297f8e2d"
+      }
+    }
+  ],
+  "version" : 3
+}
