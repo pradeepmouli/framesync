@@ -100,4 +100,3 @@ pnpm --filter @framesync/server build
 
 - All workflows use pnpm workspaces to manage the monorepo
 - Build artifacts exclude mobile builds (Expo-based, built separately)
-- Tests use vitest with `|| true` fallback to ensure they don't fail the workflow prematurely
