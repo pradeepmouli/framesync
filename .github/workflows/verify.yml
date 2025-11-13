@@ -1,26 +1,34 @@
-name: CI
+name: Verify
 
 on:
   push:
     branches: [main]
   pull_request:
     branches: [main]
+  workflow_dispatch:
 
 jobs:
   lint:
     name: Lint
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: pnpm/action-setup@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
         with:
           version: 10
-      - uses: actions/setup-node@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
         with:
           node-version: '20'
           cache: 'pnpm'
+
       - name: Install dependencies
         run: pnpm install
+
       - name: Run linter
         run: pnpm lint
 
@@ -28,16 +36,23 @@ jobs:
     name: Type Check
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: pnpm/action-setup@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
         with:
           version: 10
-      - uses: actions/setup-node@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
         with:
           node-version: '20'
           cache: 'pnpm'
+
       - name: Install dependencies
         run: pnpm install
+
       - name: Run type checking
         run: pnpm typecheck
 
@@ -45,18 +60,26 @@ jobs:
     name: Build
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: pnpm/action-setup@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
         with:
           version: 10
-      - uses: actions/setup-node@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
         with:
           node-version: '20'
           cache: 'pnpm'
+
       - name: Install dependencies
         run: pnpm install
+
       - name: Build shared package
         run: pnpm --filter @framesync/shared build
+
       - name: Build server package
         run: pnpm --filter @framesync/server build
 
@@ -64,23 +87,30 @@ jobs:
     name: Test
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: pnpm/action-setup@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
         with:
           version: 10
-      - uses: actions/setup-node@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
         with:
           node-version: '20'
           cache: 'pnpm'
+
       - name: Install dependencies
         run: pnpm install
-      - name: Run tests
+
+      - name: Run all tests
         run: pnpm test
 
   verify:
-    name: Verify
+    name: All Checks Passed
     needs: [lint, typecheck, build, test]
     runs-on: ubuntu-latest
     steps:
-      - name: All checks passed
-        run: echo "All verification checks passed successfully!"
+      - name: Verification complete
+        run: echo "✅ All verification checks passed successfully!"
