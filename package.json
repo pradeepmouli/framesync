@@ -18,16 +18,12 @@
     "android": "npm --workspace @framesync/mobile run android",
     "ios": "npm --workspace @framesync/mobile run ios"
   },
+  "dependencies": {},
+  "devDependencies": {
+    "oxfmt": "^0.44.0",
+    "oxlint": "^1.59.0"
+  },
   "engines": {
     "node": ">=20.0.0"
-  },
-  "devDependencies": {
-    "oxfmt": "^0.2.0",
-    "oxlint": "^0.9.10"
-  },
-  "dependencies": {
-    "expo": "~54.0.22",
-    "react": "19.1.0",
-    "react-native": "0.81.5"
   }
 }
