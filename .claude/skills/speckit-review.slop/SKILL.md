@@ -10,6 +10,7 @@ metadata:
 AI slop detection agent. Use `/speckit.review.slop` to run on changed files.
 
 Detects:
+
 - `as any` / `as unknown as T` type assertion abuse
 - Over-documentation (JSDoc on trivial functions)
 - Defensive coding against impossible states
